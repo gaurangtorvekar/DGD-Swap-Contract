@@ -90,9 +90,9 @@ contract swap{
     uint public expiryDate;
     
     // Constructor function for this contract. Called during contract creation
-    function swap(address beneficiary, address adddressOfToken, uint tokenPriceInWei, uint durationInDays){
+    function swap(address sendEtherTo, address adddressOfToken, uint tokenPriceInWei, uint durationInDays){
         amountRaised = msg.value;
-        beneficiary = beneficiary;
+        beneficiary = sendEtherTo;
         tokenReward = TokenInterface(adddressOfToken);
         price_tokens = tokenPriceInWei;
         expiryDate = now + durationInDays * 1 days;
