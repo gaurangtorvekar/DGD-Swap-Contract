@@ -90,12 +90,12 @@ contract swap{
     uint public expiryDate;
     
     // Constructor function for this contract. Called during contract creation
-    function swap(address _tokenAddress, address _beneficiary, uint _price, uint _durationInDays){
+    function swap(address beneficiary, address adddressOfToken, uint tokenPriceInWei, uint durationInDays){
         amountRaised = msg.value;
-        beneficiary = _beneficiary;
-        tokenReward = TokenInterface(_tokenAddress);
-        price_tokens = _price * WEI_PER_ETH;
-        expiryDate = now + _durationInDays * 1 days;
+        beneficiary = beneficiary;
+        tokenReward = TokenInterface(adddressOfToken);
+        price_tokens = tokenPriceInWei;
+        expiryDate = now + durationInDays * 1 days;
     }
     
     // This function is called every time some one sends ether to this contract
@@ -123,5 +123,4 @@ contract swap{
         tokenReward.transfer(beneficiary, balance);
     }
 }
-
 
