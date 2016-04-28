@@ -84,14 +84,13 @@ contract swap{
     address public beneficiary;
     TokenInterface public tokenReward;
     uint public price_tokens;
-    uint public amountRaised;
-    mapping (address => uint) public contributions;
     uint256 public WEI_PER_ETH = 1000000000000000000;
+    uint public BILLION = 1000000000;
     uint public expiryDate;
+    uint public tokens_public;
     
     // Constructor function for this contract. Called during contract creation
     function swap(address sendEtherTo, address adddressOfToken, uint tokenPriceInWei, uint durationInDays){
-        amountRaised = msg.value;
         beneficiary = sendEtherTo;
         tokenReward = TokenInterface(adddressOfToken);
         price_tokens = tokenPriceInWei;
@@ -101,7 +100,8 @@ contract swap{
     // This function is called every time some one sends ether to this contract
     function(){
         if (now >= expiryDate) throw;
-        var tokens_to_send = msg.value/price_tokens;
+        var tokens_to_send = (msg.value * BILLION) / price_tokens;
+        tokens_public = tokens_to_send;
         uint balance = tokenReward.balanceOf(this);
         address payee = msg.sender;
         if (balance >= tokens_to_send){
@@ -120,7 +120,7 @@ contract swap{
     //This function checks if the expiry date has passed and if it has, then returns the tokens to the beneficiary
     function checkExpiry() afterExpiry{
         uint balance = tokenReward.balanceOf(this);
-        tokenReward.transfer(beneficiary, balance);
+        tokenReward.transfer(beneficiary, balance * BILLION);
     }
 }
 
