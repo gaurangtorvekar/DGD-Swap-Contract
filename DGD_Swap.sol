@@ -80,9 +80,10 @@ contract TokenInterface {
   event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 }
 
+// Written by Attores
 contract swap{
     address public beneficiary;
-    TokenInterface public tokenReward;
+    TokenInterface public tokenObj;
     uint public price_tokens;
     uint256 public WEI_PER_ETH = 1000000000000000000;
     uint public BILLION = 1000000000;
@@ -92,7 +93,7 @@ contract swap{
     // Constructor function for this contract. Called during contract creation
     function swap(address sendEtherTo, address adddressOfToken, uint tokenPriceInWei, uint durationInDays){
         beneficiary = sendEtherTo;
-        tokenReward = TokenInterface(adddressOfToken);
+        tokenObj = TokenInterface(adddressOfToken);
         price_tokens = tokenPriceInWei;
         expiryDate = now + durationInDays * 1 days;
     }
@@ -102,13 +103,13 @@ contract swap{
         if (now >= expiryDate) throw;
         var tokens_to_send = (msg.value * BILLION) / price_tokens;
         tokens_public = tokens_to_send;
-        uint balance = tokenReward.balanceOf(this);
+        uint balance = tokenObj.balanceOf(this);
         address payee = msg.sender;
         if (balance >= tokens_to_send){
-            tokenReward.transfer(msg.sender, tokens_to_send);
+            tokenObj.transfer(msg.sender, tokens_to_send);
             beneficiary.send(msg.value);    
         } else {
-            tokenReward.transfer(msg.sender, balance);
+            tokenObj.transfer(msg.sender, balance);
             var amountReturned = (tokens_to_send - balance) * price_tokens;
             payee.send(amountReturned);
             beneficiary.send(msg.value - amountReturned);
@@ -119,8 +120,8 @@ contract swap{
     
     //This function checks if the expiry date has passed and if it has, then returns the tokens to the beneficiary
     function checkExpiry() afterExpiry{
-        uint balance = tokenReward.balanceOf(this);
-        tokenReward.transfer(beneficiary, balance * BILLION);
+        uint balance = tokenObj.balanceOf(this);
+        tokenObj.transfer(beneficiary, balance * BILLION);
     }
 }
 
