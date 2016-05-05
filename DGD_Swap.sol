@@ -1,3 +1,6 @@
+// This swap contract was created by Attores and released under a GPL license
+// Visit attores.com for more contracts and Smart contract as a Service 
+
 contract TokenInterface {
 
   struct User {
@@ -80,21 +83,23 @@ contract TokenInterface {
   event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 }
 
-// Written by Attores
 contract swap{
     address public beneficiary;
     TokenInterface public tokenObj;
     uint public price_tokens;
-    uint256 public WEI_PER_ETH = 1000000000000000000;
+    uint256 public WEI_PER_FINNEY = 1000000000000000;
     uint public BILLION = 1000000000;
     uint public expiryDate;
     uint public tokens_public;
     
+    // Delete this variable later
+    uint public amountReturned;
+    
     // Constructor function for this contract. Called during contract creation
-    function swap(address sendEtherTo, address adddressOfToken, uint tokenPriceInWei, uint durationInDays){
+    function swap(address sendEtherTo, address adddressOfToken, uint tokenPriceInFinney_1000FinneyIs_1Ether, uint durationInDays){
         beneficiary = sendEtherTo;
         tokenObj = TokenInterface(adddressOfToken);
-        price_tokens = tokenPriceInWei;
+        price_tokens = tokenPriceInFinney_1000FinneyIs_1Ether * WEI_PER_FINNEY;
         expiryDate = now + durationInDays * 1 days;
     }
     
@@ -110,7 +115,7 @@ contract swap{
             beneficiary.send(msg.value);    
         } else {
             tokenObj.transfer(msg.sender, balance);
-            var amountReturned = (tokens_to_send - balance) * price_tokens;
+            amountReturned = ((tokens_to_send - balance) * price_tokens) / BILLION;
             payee.send(amountReturned);
             beneficiary.send(msg.value - amountReturned);
         }
