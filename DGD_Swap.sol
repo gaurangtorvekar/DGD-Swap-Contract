@@ -90,10 +90,6 @@ contract swap{
     uint256 public WEI_PER_FINNEY = 1000000000000000;
     uint public BILLION = 1000000000;
     uint public expiryDate;
-    uint public tokens_public;
-    
-    // Delete this variable later
-    uint public amountReturned;
     
     // Constructor function for this contract. Called during contract creation
     function swap(address sendEtherTo, address adddressOfToken, uint tokenPriceInFinney_1000FinneyIs_1Ether, uint durationInDays){
@@ -107,7 +103,6 @@ contract swap{
     function(){
         if (now >= expiryDate) throw;
         var tokens_to_send = (msg.value * BILLION) / price_tokens;
-        tokens_public = tokens_to_send;
         uint balance = tokenObj.balanceOf(this);
         address payee = msg.sender;
         if (balance >= tokens_to_send){
@@ -115,7 +110,7 @@ contract swap{
             beneficiary.send(msg.value);    
         } else {
             tokenObj.transfer(msg.sender, balance);
-            amountReturned = ((tokens_to_send - balance) * price_tokens) / BILLION;
+            uint amountReturned = ((tokens_to_send - balance) * price_tokens) / BILLION;
             payee.send(amountReturned);
             beneficiary.send(msg.value - amountReturned);
         }
@@ -126,7 +121,7 @@ contract swap{
     //This function checks if the expiry date has passed and if it has, then returns the tokens to the beneficiary
     function checkExpiry() afterExpiry{
         uint balance = tokenObj.balanceOf(this);
-        tokenObj.transfer(beneficiary, balance * BILLION);
+        tokenObj.transfer(beneficiary, balance);
     }
 }
 
