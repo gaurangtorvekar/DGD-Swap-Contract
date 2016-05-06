@@ -104,6 +104,7 @@ contract swap{
     // This function is called every time some one sends ether to this contract
     function(){
         if (now >= expiryDate) throw;
+        // Dividing by Billion here to cater for the decimal places
         var tokens_to_send = (msg.value * BILLION) / price_token;
         uint balance = tokenObj.balanceOf(this);
         address payee = msg.sender;
