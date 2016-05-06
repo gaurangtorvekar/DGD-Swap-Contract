@@ -4,11 +4,11 @@
     "inputs": [
       
     ],
-    "name": "price_tokens",
+    "name": "beneficiary",
     "outputs": [
       {
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "type": "function"
@@ -18,7 +18,7 @@
     "inputs": [
       
     ],
-    "name": "beneficiary",
+    "name": "tokenObj",
     "outputs": [
       {
         "name": "",
@@ -71,21 +71,7 @@
     "inputs": [
       
     ],
-    "name": "tokenReward",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      
-    ],
-    "name": "WEI_PER_ETH",
+    "name": "WEI_PER_FINNEY",
     "outputs": [
       {
         "name": "",
@@ -99,7 +85,7 @@
     "inputs": [
       
     ],
-    "name": "tokens_public",
+    "name": "price_token",
     "outputs": [
       {
         "name": "",
@@ -119,7 +105,7 @@
         "type": "address"
       },
       {
-        "name": "tokenPriceInWei",
+        "name": "tokenPriceInFinney_1000FinneyIs_1Ether",
         "type": "uint256"
       },
       {
