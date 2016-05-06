@@ -120,7 +120,7 @@ contract swap{
     
     modifier afterExpiry() { if (now >= expiryDate) _ }
     
-    //This function checks if the expiry date has passed and if it has, then returns the tokens to the beneficiary
+    //This function checks if the expiry date has passed and if it has, then returns the tokens to the beneficiary of this swap contract
     function checkExpiry() afterExpiry{
         uint balance = tokenObj.balanceOf(this);
         tokenObj.transfer(beneficiary, balance);
