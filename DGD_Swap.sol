@@ -1,6 +1,7 @@
 // This swap contract was created by Attores and released under a GPL license
 // Visit attores.com for more contracts and Smart contract as a Service 
 
+// This is the standard token interface
 contract TokenInterface {
 
   struct User {
@@ -83,6 +84,7 @@ contract TokenInterface {
   event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 }
 
+// Actual swap contract written by Attores
 contract swap{
     address public beneficiary;
     TokenInterface public tokenObj;
