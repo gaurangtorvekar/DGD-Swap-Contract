@@ -1,5 +1,6 @@
 // Version 0.1
-// This swap contract was created by Attores and released under a GPL license
+// This swap contract was created by Attores and released under a GPL license. 
+// Please note that this contract is still in beta. Hence use only the amounts that you can afford to lose in case of an unforeseen bug.
 // Visit attores.com for more contracts and Smart contract as a Service 
 
 // This is the standard token interface
@@ -69,23 +70,13 @@ contract TokenInterface {
   /// @param _amount The amount of tokens to mint
   /// @return Whether or not minting was successful
   function mint(address _owner, uint256 _amount) returns (bool success);
-
-  /// @notice mintBadge Mint `_amount` badges to `_owner`
-  /// @param _owner The address of the account receiving the tokens
-  /// @param _amount The amount of tokens to mint
-  /// @return Whether or not minting was successful
-  function mintBadge(address _owner, uint256 _amount) returns (bool success);
-
-  function registerDao(address _dao) returns (bool success);
-
-  function registerSeller(address _tokensales) returns (bool success);
+  function calculateTxFee(uint256 _value, address _user) public returns (uint256);
 
   event Transfer(address indexed _from, address indexed _to, uint256 _value);
   event SendBadge(address indexed _from, address indexed _to, uint256 _amount);
   event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 }
 
-// Actual swap contract written by Attores
 contract swap{
     address public beneficiary;
     TokenInterface public tokenObj;
@@ -93,6 +84,7 @@ contract swap{
     uint256 public WEI_PER_FINNEY = 1000000000000000;
     uint public BILLION = 1000000000;
     uint public expiryDate;
+    uint public balance;
     
     // Constructor function for this contract. Called during contract creation
     function swap(address sendEtherTo, address adddressOfToken, uint tokenPriceInFinney_1000FinneyIs_1Ether, uint durationInDays){
@@ -102,18 +94,17 @@ contract swap{
         expiryDate = now + durationInDays * 1 days;
     }
     
-    // This function is called every time some one sends ether to this contract
     function(){
         if (now >= expiryDate) throw;
         // Dividing by Billion here to cater for the decimal places
         var tokens_to_send = (msg.value * BILLION) / price_token;
-        uint balance = tokenObj.balanceOf(this);
+        balance = tokenObj.allowance(beneficiary, this);
         address payee = msg.sender;
         if (balance >= tokens_to_send){
-            tokenObj.transfer(msg.sender, tokens_to_send);
+            tokenObj.transferFrom(beneficiary, msg.sender, tokens_to_send);
             beneficiary.send(msg.value);    
         } else {
-            tokenObj.transfer(msg.sender, balance);
+            tokenObj.transferFrom(beneficiary, msg.sender, balance);
             uint amountReturned = ((tokens_to_send - balance) * price_token) / BILLION;
             payee.send(amountReturned);
             beneficiary.send(msg.value - amountReturned);
@@ -122,10 +113,24 @@ contract swap{
     
     modifier afterExpiry() { if (now >= expiryDate) _ }
     
+    modifier ifBeneficiary() { 
+        if (beneficiary != msg.sender) {
+            throw;
+        } else {
+            _
+        }
+    }
+    
     //This function checks if the expiry date has passed and if it has, then returns the tokens to the beneficiary
     function checkExpiry() afterExpiry{
-        uint balance = tokenObj.balanceOf(this);
+        uint balance = tokenObj.allowance(msg.sender, this);
         tokenObj.transfer(beneficiary, balance);
     }
+    
+    // This function is a fail-safe in case someone "sends" the tokens to this contract instead of "approving" them
+    function emergencyWithdrawal() ifBeneficiary{
+        uint txnFee = tokenObj.calculateTxFee(balance, this);
+        uint amountReturned = balance - txnFee;
+        tokenObj.transfer(beneficiary, amountReturned);
+    }
 }
-
