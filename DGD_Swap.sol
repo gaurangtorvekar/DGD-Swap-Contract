@@ -1,4 +1,4 @@
-// Version 0.1
+// Version 0.2
 // This swap contract was created by Attores and released under a GPL license. 
 // Please note that this contract is still in beta. Hence use only the amounts that you can afford to lose in case of an unforeseen bug.
 // Visit attores.com for more contracts and Smart contract as a Service 
