@@ -67,6 +67,17 @@
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [
+      
+    ],
+    "name": "emergencyWithdrawal",
+    "outputs": [
+      
+    ],
+    "type": "function"
+  },
+  {
     "constant": true,
     "inputs": [
       
@@ -86,6 +97,20 @@
       
     ],
     "name": "price_token",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      
+    ],
+    "name": "balance",
     "outputs": [
       {
         "name": "",
