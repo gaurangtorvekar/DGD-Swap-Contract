@@ -128,8 +128,8 @@ contract swap{
     }
     
     // This function is a fail-safe in case someone "sends" the tokens to this contract instead of "approving" them
-    function emergencyWithdrawal() ifBeneficiary{
-        uint balance = tokenObj.balanceOf(this);
-        tokenObj.transfer(beneficiary, balance);
+    function emergencyWithdrawal(address token) ifBeneficiary{
+        uint balance = TokenInterface(token).balanceOf(this);
+        TokenInterface(token).transfer(beneficiary, balance);
     }
 }
