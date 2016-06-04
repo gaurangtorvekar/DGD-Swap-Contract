@@ -121,13 +121,11 @@ contract swap{
         }
     }
     
-    //This function checks if the expiry date has passed and if it has, then returns the tokens to the beneficiary
-    function checkExpiry() afterExpiry{
-        uint balance = tokenObj.allowance(msg.sender, this);
-        tokenObj.transfer(beneficiary, balance);
+    // To kill the swap after expiry date
+    function killSwap() ifBeneficiary afterExpiry{
+        suicide(beneficiary);
     }
-    
-    
+  
     // This function is a fail-safe in case someone "sends" the tokens to this contract instead of "approving" them
     function emergencyWithdrawal(address token) ifBeneficiary{
         uint balance = TokenInterface(token).balanceOf(this);
